@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_demo3/constant.dart';
 import 'package:quiz_demo3/question.dart';
-import 'package:quiz_demo3/result_screen.dart';
+import 'package:quiz_demo3/resultscreen.dart';
 
 void main() {
   runApp(
@@ -24,9 +24,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
 
   late Size size;
+  ScrollController scrollController = ScrollController();
 
   int currentQuestionNumber = 0;
   bool isOnePressed = false;
+  // bool isLastQuestion = false;
+  bool get isLastQuestion => currentQuestionNumber == testList.length - 1;
 
   List statusList = [];
 
@@ -59,110 +62,121 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: kdarkblue,
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 30),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: size.height * 0.07,
-                ),
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      width: 4,
-                      color: Colors.grey,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/image/2.jpg',
+            fit: BoxFit.cover,
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.07,
                     ),
-                  ),
-                  child: LinearProgressIndicator(
-                    borderRadius: BorderRadius.circular(25),
-                    value: animation
-                        .value, // change controller.value to animation.value
-                    backgroundColor: kdarkblue,
-                    valueColor: AlwaysStoppedAnimation(Colors.red),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: questionListRow(),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.025,
-                ),
-                Divider(
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  height: size.height * 0.025,
-                ),
-                SizedBox(
-                  height: size.height * 0.25,
-                  child: Text(
-                    testList[currentQuestionNumber].question,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                answerContainer(testList[currentQuestionNumber].answer1, 1),
-                SizedBox(
-                  height: size.height * 0.03,
-                ),
-                answerContainer(testList[currentQuestionNumber].answer2, 2),
-                SizedBox(
-                  height: size.height * 0.07,
-                ),
-                Material(
-                  color: klightblue,
-                  borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    onTap: () {
-                      controller.reset();
-                      onNextPressed(false);
-                      controller.forward();
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      width: 150,
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                    Container(
+                      height: 20,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          width: 2,
+                          color: Colors.white,
+                        ),
                       ),
-                      child: Center(
-                        child: Text(
-                          'Next',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                      child: LinearProgressIndicator(
+                        borderRadius: BorderRadius.circular(25),
+                        value: animation.value,
+                        backgroundColor: Colors.white,
+                        valueColor: AlwaysStoppedAnimation<Color>(kgreen),
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    SingleChildScrollView(
+                      controller: scrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: questionListRow(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.025,
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.025,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.2,
+                      child: Text(
+                        testList[currentQuestionNumber].question,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    answerContainer(testList[currentQuestionNumber].answer1, 1),
+                    SizedBox(
+                      height: size.height * 0.03,
+                    ),
+                    answerContainer(testList[currentQuestionNumber].answer2, 2),
+                    SizedBox(
+                      height: size.height * 0.07,
+                    ),
+                    Material(
+                      color: kgreen,
+                      borderRadius: BorderRadius.circular(20),
+                      child: InkWell(
+                        onTap: () {
+                          controller.reset();
+                          onNextPressed(false);
+                          controller.forward();
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          width: 150,
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: Center(
+                            child: Text(
+                              isLastQuestion ? 'پایان آزمون' : 'بعدی',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
+
+  // functions
 
   List<Widget> questionListRow() {
     List<Widget> widgetsList = [];
@@ -186,7 +200,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           // pass
         }
       } else {
-        color = kpurpule;
+        color = Colors.white;
       }
     } else {
       // add exiting if here again
@@ -206,13 +220,14 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
+        border: Border.all(color: Colors.black, width: 2),
       ),
       child: Center(
         child: Text(
           '$num',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
+            color: Colors.black,
+            fontSize: 20,
           ),
         ),
       ),
@@ -242,9 +257,10 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            width: 4,
-            color: Colors.blue.shade800,
+            width: 2,
+            color: Colors.black,
           ),
+          color: const Color.fromARGB(232, 255, 255, 255),
         ),
         child: Center(
           child: Row(
@@ -253,18 +269,25 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 child: Text(
                   '$answer',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 18,
                   ),
                 ),
               ),
-              Icon(
-                Icons.brightness_1_rounded,
-                color: (isOnePressed && num == 1 || !isOnePressed && num == 2)
-                    ? kpurpule
-                    : Colors.white,
-                size: 30,
-              ),
+              Container(
+                padding: EdgeInsets.all(1), // تنظیم حاشیه برای آیکون
+                decoration: BoxDecoration(
+                  color: Colors.black, // رنگ حاشیه
+                  shape: BoxShape.circle, // شکل حاشیه
+                ),
+                child: Icon(
+                  Icons.brightness_1_rounded,
+                  color: (isOnePressed && num == 1 || !isOnePressed && num == 2)
+                      ? kgreen
+                      : Colors.white,
+                  size: 30,
+                ),
+              )
             ],
           ),
         ),
@@ -273,6 +296,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   }
 
   void onNextPressed(bool isFromTimer) {
+    scrollController.animateTo(currentQuestionNumber * 50.0,
+        duration: Duration(milliseconds: 500), curve: Curves.ease);
     // add input for function because of controller
     if (isFromTimer == true) {
       statusList[currentQuestionNumber] = false;
@@ -281,19 +306,10 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     }
     if (currentQuestionNumber + 1 >= 10) {
       // add reset and dispose
-      controller.reset();
-      controller.dispose();
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ResultScreen(),
-        ),
-      );
-
-      child:
-      Text("Song Name");
+      // isLastQuestion = true;
+      my_navigator();
+      // go to resultscreen
     } //
-
     else {
       currentQuestionNumber++;
     }
@@ -305,5 +321,48 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     int myAnswer = (isOnePressed) ? 1 : 2;
     bool status = testList[currentQuestionNumber].isRight(myAnswer);
     statusList[currentQuestionNumber] = status;
+  }
+
+  Future<void> my_navigator() async {
+    controller.reset();
+    List<int> resultList = grade();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultScreen(isLastQuestion, resultList),
+      ),
+    );
+
+    reseter();
+  }
+
+  List<int> grade() {
+    int rightAnswer = 0;
+    int wrongAnswer = 0;
+    int noAnswer = 0;
+
+    for (var each in statusList) {
+      if (each == true) {
+        rightAnswer++;
+      } else if (each == false) {
+        wrongAnswer++;
+      } else {
+        noAnswer++;
+      }
+    }
+    return [rightAnswer, wrongAnswer, noAnswer];
+  }
+
+  void reseter() {
+    currentQuestionNumber = 0;
+    isOnePressed = false;
+    statusList.clear();
+    for (int i = 0; i < testList.length; i++) {
+      statusList.add(0);
+    }
+    controller.forward();
+    scrollController.animateTo(currentQuestionNumber * 50.0,
+        duration: Duration(milliseconds: 500), curve: Curves.ease);
+    setState(() {});
   }
 }
