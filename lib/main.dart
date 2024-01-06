@@ -8,7 +8,6 @@ import 'package:quiz_demo3/resultscreen.dart';
 void main() {
   runApp(
     MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: MyApp(),
     ),
   );
