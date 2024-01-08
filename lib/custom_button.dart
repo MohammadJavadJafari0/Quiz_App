@@ -17,7 +17,7 @@ class Custom_Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isLastQuestion = currentQuestionNumber == testList.length - 1;
-    String displayText = isLastQuestion ? 'پایان مراحل آزمون' : text;
+    String displayText = isLastQuestion ? 'پایان آزمون' : text;
     return Material(
       color: color,
       borderRadius: BorderRadius.circular(20),
